@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="fr"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>StudentService.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">etudiant-backend</a> &gt; <a href="index.source.html" class="el_package">com.openclassrooms.etudiant.service</a> &gt; <span class="el_source">StudentService.java</span></div><h1>StudentService.java</h1><pre class="source lang-java linenums">package com.openclassrooms.etudiant.service; 
+
+import java.util.List;
+import com.openclassrooms.etudiant.entities.Student;
+import com.openclassrooms.etudiant.repository.StudentRepository;
+import lombok.RequiredArgsConstructor;
+import org.springframework.stereotype.Service;
+
+@Service
+<span class="fc" id="L10">@RequiredArgsConstructor</span>
+public class StudentService {
+
+    private final StudentRepository studentRepository;
+
+    public Student create(Student student) {
+<span class="fc" id="L16">        return studentRepository.save(student);</span>
+    }
+
+    public List&lt;Student&gt; findAll() {
+<span class="fc" id="L20">    return studentRepository.findAll();</span>
+    }
+
+    public Student findById(Long id) {
+<span class="fc" id="L24">        return studentRepository.findById(id)</span>
+<span class="fc" id="L25">            .orElseThrow(() -&gt; new IllegalArgumentException(</span>
+                    &quot;Student not found with id: &quot; + id
+            ));
+    }
+    public Student update(Long id, Student student) {
+
+<span class="fc" id="L31">        Student existingStudent = findById(id);</span>
+
+<span class="fc" id="L33">        existingStudent.setFirstName(student.getFirstName());</span>
+<span class="fc" id="L34">        existingStudent.setLastName(student.getLastName());</span>
+
+<span class="fc" id="L36">        return studentRepository.save(existingStudent);</span>
+    }  
+    public void delete(Long id) {
+<span class="fc" id="L39">     Student existingStudent = findById(id);</span>
+<span class="fc" id="L40">        studentRepository.delete(existingStudent);</span>
+<span class="fc" id="L41">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.15.202606040825</span></div></body></html>

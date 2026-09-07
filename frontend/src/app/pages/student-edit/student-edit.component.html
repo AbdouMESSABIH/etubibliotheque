@@ -1,0 +1,27 @@
+<h1>Modifier l'étudiant</h1>
+
+<form [formGroup]="studentForm" (ngSubmit)="onSubmit()">
+
+  <div>
+    <label for="firstName">Prénom</label>
+    <input
+      id="firstName"
+      type="text"
+      formControlName="firstName"
+    />
+  </div>
+
+  <div>
+    <label for="lastName">Nom</label>
+    <input
+      id="lastName"
+      type="text"
+      formControlName="lastName"
+    />
+  </div>
+
+  <button type="submit">
+    Enregistrer
+  </button>
+
+</form>

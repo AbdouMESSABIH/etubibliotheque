@@ -1,0 +1,15 @@
+<h1>Liste des étudiants</h1>
+
+<a routerLink="/students/new">Ajouter un étudiant</a>
+
+@if (students.length === 0) {
+  <p>Aucun étudiant.</p>
+}
+
+@for (student of students; track student.id) {
+  <div>
+    <strong>{{ student.firstName }} {{ student.lastName }}</strong>
+    <span> - ID : {{ student.id }}</span>
+    <a [routerLink]="['/students', student.id]">Voir</a>
+  </div>
+}

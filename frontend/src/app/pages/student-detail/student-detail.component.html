@@ -1,0 +1,13 @@
+@if (student) {
+  <p><strong>ID :</strong> {{ student.id }}</p>
+  <p><strong>Prénom :</strong> {{ student.firstName }}</p>
+  <p><strong>Nom :</strong> {{ student.lastName }}</p>
+
+  <a [routerLink]="['/students', student.id, 'edit']">
+    Modifier
+  </a>
+
+  <button type="button" (click)="deleteStudent()">
+    Supprimer
+  </button>
+}
