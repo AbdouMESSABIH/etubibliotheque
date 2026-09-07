@@ -4,7 +4,7 @@
 
 ### Projet 2 · Expert DevOps · OpenClassrooms
 
-Cette page centralise les **tests unitaires**, les **tests d'intégration**, les **tests E2E** et les **rapports de couverture** du projet.
+Cette page centralise les **tests unitaires**, les **tests d’intégration**, les **tests End-to-End** ainsi que les **rapports de couverture** du projet.
 
 ---
 
@@ -18,30 +18,31 @@ Cette page centralise les **tests unitaires**, les **tests d'intégration**, les
 
 ---
 
-# 🎯 Objectif
+# 🎯 Objectif de la stratégie de tests
 
-La stratégie de test vérifie l'application à trois niveaux :
+L’objectif de cette partie du projet est de vérifier l’application à plusieurs niveaux :
 
 ```text
 Tests unitaires
       ↓
-Tests d'intégration
+Tests d’intégration
       ↓
 Tests End-to-End
 ```
 
-L'objectif est de vérifier :
+Les tests permettent de vérifier :
 
 - la logique métier du back-end ;
-- les controllers et les échanges avec la base ;
+- le comportement des services ;
+- les controllers et les échanges avec la base de données ;
+- la sécurité JWT ;
 - les services et composants Angular ;
-- la sécurité JWT côté front et back ;
 - les principaux parcours utilisateurs ;
-- une couverture de test supérieure au seuil demandé de 80 %.
+- la couverture du code.
 
 ---
 
-# ☕ 1. Tests back-end
+# ☕ 1. Tests unitaires back-end
 
 📁 [Accéder aux tests back-end](./backend/src/test/java/com/openclassrooms/etudiant/)
 
@@ -50,8 +51,8 @@ Technologies utilisées :
 ```text
 JUnit 5
 Mockito
-MockMvc
 Spring Boot Test
+MockMvc
 Testcontainers
 MySQL
 JaCoCo
@@ -59,61 +60,84 @@ JaCoCo
 
 ---
 
-## Tests unitaires des services
+## UserServiceTest
 
-### UserService
+📄 [UserServiceTest.java](./backend/src/test/java/com/openclassrooms/etudiant/service/UserServiceTest.java)
 
-📁 [UserServiceTest.java](./backend/src/test/java/com/openclassrooms/etudiant/service/UserServiceTest.java)
+Les tests couvrent notamment :
 
-Scénarios testés :
+### Inscription
 
 ```text
-Inscription
-├── utilisateur null
-├── utilisateur déjà existant
-└── inscription réussie
+Utilisateur null
+→ erreur attendue
 
-Connexion
-├── connexion réussie
-├── mauvais mot de passe
-└── utilisateur inconnu
+Utilisateur déjà existant
+→ erreur attendue
+
+Utilisateur valide
+→ sauvegarde en base
+```
+
+### Connexion
+
+```text
+Utilisateur connu + bon mot de passe
+→ JWT retourné
+
+Mauvais mot de passe
+→ erreur
+
+Utilisateur inconnu
+→ erreur
 ```
 
 ---
 
-### StudentService
+## StudentServiceTest
 
-📁 [StudentServiceTest.java](./backend/src/test/java/com/openclassrooms/etudiant/service/StudentServiceTest.java)
+📄 [StudentServiceTest.java](./backend/src/test/java/com/openclassrooms/etudiant/service/StudentServiceTest.java)
 
-Le CRUD est couvert :
+Le CRUD du service est testé :
 
 ```text
-CREATE  → création d'un étudiant
-READ    → liste des étudiants
-READ    → recherche par ID
-UPDATE  → modification
-DELETE  → suppression
-ERROR   → étudiant inexistant
+CREATE
+→ création d’un étudiant
+
+READ
+→ récupération de tous les étudiants
+
+READ BY ID
+→ récupération d’un étudiant
+
+UPDATE
+→ modification d’un étudiant
+
+DELETE
+→ suppression d’un étudiant
+
+ERROR
+→ étudiant inexistant
 ```
 
 ---
 
-### JwtService
+## JwtServiceTest
 
-📁 [JwtServiceTest.java](./backend/src/test/java/com/openclassrooms/etudiant/service/JwtServiceTest.java)
+📄 [JwtServiceTest.java](./backend/src/test/java/com/openclassrooms/etudiant/service/JwtServiceTest.java)
 
-Scénarios :
+Les tests vérifient :
 
 ```text
-Génération du token
+Génération d’un JWT
 Extraction du username
-Validation d'un token
-Rejet d'un token pour un autre utilisateur
+Validation d’un token
+Rejet d’un token pour un autre utilisateur
 ```
 
 ---
 
-# 🔗 2. Tests d'intégration back-end
+# 🔗 2. Tests d’intégration back-end
 
 Les controllers sont testés avec :
 
@@ -124,37 +148,49 @@ Testcontainers
 MySQL 8.0.36
 ```
 
-Une vraie base MySQL temporaire est lancée dans Docker pendant les tests.
+Une vraie instance temporaire de MySQL est démarrée dans Docker pendant les tests.
 
----
-
-## StudentController
-
-📁 [StudentControllerTest.java](./backend/src/test/java/com/openclassrooms/etudiant/controller/StudentControllerTest.java)
-
-Scénarios :
-
-| Action | Route | Résultat attendu |
-|---|---|:---:|
-| Créer | `POST /api/students` | `201` |
-| Lister | `GET /api/students` | `200` |
-| Consulter | `GET /api/students/{id}` | `200` |
-| Modifier | `PUT /api/students/{id}` | `200` |
-| Supprimer | `DELETE /api/students/{id}` | `204` |
-| Accès sans JWT | `/api/students` | `401` |
-| Données invalides | `POST /api/students` | `400` |
-
----
-
-## UserController
-
-📁 [UserControllerTest.java](./backend/src/test/java/com/openclassrooms/etudiant/controller/UserControllerTest.java)
-
-Scénarios :
+Cela permet de tester plusieurs couches ensemble :
 
 ```text
-Inscription vide
-Inscription déjà existante
+Controller
+    ↓
+Service
+    ↓
+Repository
+    ↓
+MySQL temporaire
+```
+
+---
+
+## StudentControllerTest
+
+📄 [StudentControllerTest.java](./backend/src/test/java/com/openclassrooms/etudiant/controller/StudentControllerTest.java)
+
+Les principaux scénarios CRUD sont testés :
+
+| Action | Méthode | Route | Résultat attendu |
+|---|:---:|---|:---:|
+| Créer | POST | `/api/students` | `201` |
+| Lister | GET | `/api/students` | `200` |
+| Consulter | GET | `/api/students/{id}` | `200` |
+| Modifier | PUT | `/api/students/{id}` | `200` |
+| Supprimer | DELETE | `/api/students/{id}` | `204` |
+| Accès sans JWT | GET | `/api/students` | `401` |
+| Données invalides | POST | `/api/students` | `400` |
+
+---
+
+## UserControllerTest
+
+📄 [UserControllerTest.java](./backend/src/test/java/com/openclassrooms/etudiant/controller/UserControllerTest.java)
+
+Les scénarios testés comprennent :
+
+```text
+Inscription avec données invalides
+Inscription d’un utilisateur déjà existant
 Inscription réussie
 Connexion réussie
 Mauvais mot de passe
@@ -162,34 +198,45 @@ Mauvais mot de passe
 
 ---
 
-## Gestion des erreurs
+## RestExceptionHandlerTest
 
-📁 [RestExceptionHandlerTest.java](./backend/src/test/java/com/openclassrooms/etudiant/handler/RestExceptionHandlerTest.java)
+📄 [RestExceptionHandlerTest.java](./backend/src/test/java/com/openclassrooms/etudiant/handler/RestExceptionHandlerTest.java)
 
-| Exception | HTTP |
+La gestion centralisée des erreurs HTTP est également testée.
+
+| Exception | Réponse HTTP |
 |---|:---:|
-| IllegalArgumentException | 400 |
-| BadCredentialsException | 401 |
-| AccessDeniedException | 403 |
-| RuntimeException | 500 |
+| `IllegalArgumentException` | `400` |
+| `BadCredentialsException` | `401` |
+| `AccessDeniedException` | `403` |
+| `RuntimeException` | `500` |
 
 ---
 
-# 📊 Couverture back-end
-
-Le rapport a été généré avec **JaCoCo**.
-
-### Résultat
+# ✅ Résultat des tests back-end
 
 ```text
-Couverture globale : 81 %
+Tests exécutés : 32
+Failures        : 0
+Errors          : 0
+Skipped         : 0
 ```
 
-📁 [Rapport JaCoCo](./reports/backend-jacoco/)
+---
 
-📄 [index.html](./reports/backend-jacoco/index.html)
+# 📊 3. Couverture back-end — JaCoCo
 
-Le rapport inclut notamment :
+Le rapport de couverture du back-end est généré avec **JaCoCo**.
+
+## Résultat global
+
+```text
+Couverture des instructions : 81 %
+```
+
+Le seuil demandé de **80 % minimum** est donc atteint.
+
+Quelques résultats importants :
 
 ```text
 Services        → 100 %
@@ -198,15 +245,30 @@ Sécurité        → 96 %
 Mapper          → 91 %
 ```
 
-Les classes `dto` et `entities`, principalement structurelles, sont exclues du calcul afin de concentrer la couverture sur le code exécutable.
+Les classes principalement structurelles telles que les `DTO` et les `Entities` ont été exclues du calcul afin de concentrer la couverture sur le code exécutable.
 
 ---
 
-# 🅰️ 3. Tests front-end avec Jest
+## 📸 Preuve visuelle — Back-end
 
-📁 [Accéder au code front-end](./frontend/src/)
+![Couverture back-end JaCoCo](./reports/screenshots/couverture_backend_81.png)
 
-Technologies :
+---
+
+## Rapport complet
+
+📁 [Ouvrir le rapport JaCoCo](./reports/backend-jacoco/)
+
+📄 [Voir le fichier index.html](./reports/backend-jacoco/index.html)
+
+> GitHub affiche le HTML comme un fichier source.  
+> La section **Consulter les rapports localement** explique comment afficher le vrai rendu interactif.
+
+---
+
+# 🅰️ 4. Tests front-end avec Jest
+
+Les tests Angular utilisent notamment :
 
 ```text
 Jest
@@ -218,11 +280,11 @@ RxJS
 
 ---
 
-## StudentService
+# StudentService
 
 📄 [student.service.spec.ts](./frontend/src/app/core/service/student.service.spec.ts)
 
-Les appels HTTP suivants sont testés :
+Les cinq opérations HTTP sont testées :
 
 ```text
 GET    /api/students
@@ -232,47 +294,50 @@ PUT    /api/students/{id}
 DELETE /api/students/{id}
 ```
 
-`HttpTestingController` permet de vérifier :
+`HttpTestingController` permet de :
 
 ```text
-URL
-Méthode HTTP
-Body
-Réponse simulée
+intercepter la requête
+→ vérifier l’URL
+→ vérifier la méthode HTTP
+→ vérifier le body
+→ simuler la réponse avec flush()
 ```
 
-Aucun vrai back-end n'est nécessaire.
+Aucun vrai back-end n’est nécessaire pour ces tests.
 
 ---
 
-## UserService
+# UserService
 
 📄 [user.service.spec.ts](./frontend/src/app/core/service/user.service.spec.ts)
 
-Tests :
+Les tests vérifient notamment :
 
 ```text
 POST /api/register
 POST /api/login
-Body envoyé
+Contenu envoyé
 JWT retourné
 responseType = text
 ```
 
 ---
 
-# 🔐 4. Tests de sécurité Angular
+# 🔐 5. Tests de sécurité Angular
 
 ## Auth Guard
 
 📄 [auth.guard.spec.ts](./frontend/src/app/core/guard/auth.guard.spec.ts)
+
+Deux comportements sont testés :
 
 ```text
 JWT présent
 → accès autorisé
 
 JWT absent
-→ redirection /login
+→ redirection vers /login
 ```
 
 ---
@@ -281,50 +346,60 @@ JWT absent
 
 📄 [auth.interceptor.spec.ts](./frontend/src/app/core/interceptor/auth.interceptor.spec.ts)
 
+Deux comportements sont testés :
+
 ```text
 JWT présent
 → Authorization: Bearer JWT_TOKEN
 
 JWT absent
-→ requête sans Authorization
+→ aucun header Authorization
 ```
 
 ---
 
-# 🧩 5. Tests des composants Angular
+# 🧩 6. Tests des composants Angular
 
-Les composants ne sont pas uniquement testés avec `should create`.
+Les composants ne sont pas uniquement testés avec :
 
-Des comportements fonctionnels sont également vérifiés.
+```text
+should create
+```
+
+Des comportements fonctionnels réels sont également vérifiés.
 
 ---
 
-## Création d'un étudiant
+## Création d’un étudiant
 
 📄 [student-create.component.spec.ts](./frontend/src/app/pages/student-create/student-create.component.spec.ts)
 
+Scénarios :
+
 ```text
 Formulaire invalide
-→ aucun appel au service
+→ aucun appel StudentService.create()
 
 Formulaire valide
 → StudentService.create()
 
-Succès
+Création réussie
 → navigation vers /students
 
-Erreur
-→ gestion de l'erreur
+Erreur serveur
+→ gestion de l’erreur
 ```
 
 ---
 
-## Modification d'un étudiant
+## Modification d’un étudiant
 
 📄 [student-edit.component.spec.ts](./frontend/src/app/pages/student-edit/student-edit.component.spec.ts)
 
+Scénarios :
+
 ```text
-Lecture de l'ID dans la route
+Lecture de l’ID dans l’URL
 → getById(id)
 
 Chargement réussi
@@ -334,40 +409,53 @@ Formulaire invalide
 → aucun update()
 
 Modification réussie
+→ update(id, student)
+
+Succès
 → navigation vers /students/{id}
 
 Erreur
-→ gestion de l'erreur
+→ gestion de l’erreur
 ```
 
 ---
 
-# 📊 Couverture front-end
+# 📊 7. Couverture front-end — Jest / Istanbul
 
-Le rapport a été généré avec Jest / Istanbul.
+Le rapport de couverture du front-end est généré avec Jest / Istanbul.
 
-### Résultats
+## Résultats
 
-| Métrique | Résultat |
+| Métrique | Couverture |
 |---|---:|
 | Statements | **83,33 %** |
 | Lines | **81,57 %** |
 | Branches | 50 % |
 | Functions | 56,09 % |
 
-Le seuil demandé de **80 % minimum** est atteint.
-
-📁 [Rapport Jest](./reports/frontend-jest/)
-
-📄 [index.html](./reports/frontend-jest/index.html)
+Le seuil demandé de **80 % minimum** est atteint sur la couverture principale du front-end.
 
 ---
 
-# 🌐 6. Tests End-to-End avec Cypress
+## 📸 Preuve visuelle — Front-end
 
-📁 [Tests Cypress](./frontend/cypress/e2e/)
+![Couverture front-end Jest](./reports/screenshots/couverture_frontend_83.png)
 
-Les tests Cypress reproduisent les actions d'un utilisateur dans le navigateur.
+---
+
+## Rapport complet
+
+📁 [Ouvrir le rapport Jest](./reports/frontend-jest/)
+
+📄 [Voir le fichier index.html](./reports/frontend-jest/index.html)
+
+---
+
+# 🌐 8. Tests End-to-End avec Cypress
+
+📁 [Accéder aux tests Cypress](./frontend/cypress/e2e/)
+
+Les tests Cypress reproduisent les actions d’un utilisateur réel dans le navigateur.
 
 Les appels API sont simulés avec :
 
@@ -375,53 +463,81 @@ Les appels API sont simulés avec :
 cy.intercept()
 ```
 
-Cela permet de tester le front-end sans dépendre d'un back-end ou d'une base de données démarrés.
+Cela permet de tester le front-end sans dépendre :
+
+```text
+du serveur Spring Boot
+de MySQL
+d’un environnement externe
+```
 
 ---
 
-## Connexion
+# 🔐 Parcours de connexion
 
 📄 [login.cy.ts](./frontend/cypress/e2e/login.cy.ts)
+
+Scénarios :
 
 ```text
 ✅ Connexion réussie
 ✅ Mauvais identifiants
 ```
 
-Le test vérifie notamment :
+Le parcours de connexion vérifie notamment :
 
 ```text
-Remplissage du formulaire
-→ POST /api/login
+Ouverture de /login
+→ remplissage login/password
+→ POST /api/login intercepté
 → JWT simulé
-→ stockage dans localStorage
+→ stockage du token dans localStorage
+```
+
+En cas de mauvais identifiants :
+
+```text
+POST /api/login
+→ réponse 400 simulée
+→ message d’erreur visible
+→ aucun JWT stocké
 ```
 
 ---
 
-## Inscription
+# 📝 Parcours d’inscription
 
 📄 [register.cy.ts](./frontend/cypress/e2e/register.cy.ts)
+
+Scénarios :
 
 ```text
 ✅ Inscription réussie
 ✅ Validation du formulaire vide
 ```
 
+Le test vérifie également les données envoyées à :
+
+```text
+POST /api/register
+```
+
 ---
 
-## Gestion des étudiants
+# 👨‍🎓 Parcours étudiants
 
 📄 [students.cy.ts](./frontend/cypress/e2e/students.cy.ts)
 
+Les principaux parcours utilisateurs sont testés :
+
 ```text
-✅ Liste des étudiants
-✅ Création
-✅ Modification
-✅ Suppression
+✅ Consultation de la liste
+✅ Création d’un étudiant
+✅ Modification d’un étudiant
+✅ Suppression d’un étudiant
 ```
 
-Les routes mockées sont :
+Les appels API interceptés sont :
 
 ```text
 GET    /api/students
@@ -442,26 +558,27 @@ students.cy.ts    4 / 4
 
 -----------------------
 
-Total             8 / 8
+TOTAL             8 / 8
+
 Passing           8
 Failing           0
 ```
 
 ---
 
-# 📈 Couverture des parcours E2E
+# 📈 9. Couverture des parcours E2E
 
-Parcours utilisateurs définis :
+Les parcours utilisateurs définis sont :
 
 ```text
 1. Connexion réussie
-2. Connexion incorrecte
+2. Connexion avec mauvais identifiants
 3. Inscription réussie
-4. Validation inscription
-5. Liste étudiants
-6. Création étudiant
-7. Modification étudiant
-8. Suppression étudiant
+4. Validation du formulaire d’inscription
+5. Consultation de la liste des étudiants
+6. Création d’un étudiant
+7. Modification d’un étudiant
+8. Suppression d’un étudiant
 ```
 
 Résultat :
@@ -473,36 +590,37 @@ Parcours couverts : 8
 8 / 8 = 100 %
 ```
 
-Il s'agit de la **couverture des parcours utilisateurs définis**, et non d'une couverture des lignes de code.
+Il s’agit ici de la **couverture des parcours utilisateurs définis**, et non d’une couverture des lignes de code.
 
-📄 [Rapport E2E](./frontend/cypress/reports/e2e-coverage.md)
+📄 [Consulter le rapport E2E](./frontend/cypress/reports/e2e-coverage.md)
 
 ---
 
-# 🧾 7. Synthèse générale
+# 📊 10. Synthèse générale
 
-| Élément | Résultat |
+| Domaine | Résultat |
 |---|---:|
 | Tests back-end | ✅ **32** |
-| Échecs back-end | ✅ **0** |
-| Couverture JaCoCo | ✅ **81 %** |
-| Statements Jest | ✅ **83,33 %** |
-| Lines Jest | ✅ **81,57 %** |
-| Tests Cypress | ✅ **8 / 8** |
+| Failures back-end | ✅ **0** |
+| Errors back-end | ✅ **0** |
+| JaCoCo | ✅ **81 %** |
+| Jest Statements | ✅ **83,33 %** |
+| Jest Lines | ✅ **81,57 %** |
+| Cypress | ✅ **8 / 8** |
 | Échecs Cypress | ✅ **0** |
-| Parcours E2E couverts | ✅ **100 %** |
+| Parcours E2E définis couverts | ✅ **100 %** |
 
 ---
 
-# 🔎 Consulter les rapports HTML
+# 🔎 11. Consulter les rapports HTML localement
 
-GitHub affiche les fichiers HTML comme du code source.
+GitHub stocke les rapports HTML mais ne les affiche pas comme un véritable site web.
 
-Pour profiter de l'interface complète des rapports, ils peuvent être servis localement.
+Pour profiter de leur rendu complet, les rapports peuvent être servis localement.
 
 ---
 
-## JaCoCo
+## Rapport JaCoCo
 
 Depuis la racine du repository :
 
@@ -516,9 +634,20 @@ Puis ouvrir :
 http://localhost:8000
 ```
 
+Le rapport affichera notamment :
+
+```text
+Couverture globale : 81 %
+Services : 100 %
+Controllers : 100 %
+Sécurité : 96 %
+```
+
 ---
 
-## Jest
+## Rapport Jest
+
+Depuis la racine :
 
 ```bash
 python3 -m http.server 8001 --directory reports/frontend-jest
@@ -530,33 +659,60 @@ Puis ouvrir :
 http://localhost:8001
 ```
 
+Le rapport affichera notamment :
+
+```text
+Statements : 83,33 %
+Lines      : 81,57 %
+```
+
 ---
 
-# ▶️ Commandes de validation
+# ▶️ 12. Commandes de validation
 
 ## Back-end
 
+Se placer dans :
+
 ```bash
 cd backend
+```
+
+Lancer les tests :
+
+```bash
 mvn test
 ```
 
-Rapport JaCoCo :
+Générer le rapport JaCoCo :
 
 ```bash
 mvn clean verify
 ```
 
+Le rapport généré localement est disponible dans :
+
+```text
+target/site/jacoco/index.html
+```
+
 ---
 
-## Front-end
+# Front-end Jest
+
+Se placer dans :
 
 ```bash
 cd frontend
+```
+
+Lancer les tests :
+
+```bash
 npm test -- --runInBand
 ```
 
-Rapport Jest :
+Générer le rapport de couverture :
 
 ```bash
 npm test -- --runInBand --coverage
@@ -564,18 +720,18 @@ npm test -- --runInBand --coverage
 
 ---
 
-## Cypress
+# Cypress
 
-Le front Angular doit être démarré.
+Le front-end Angular doit être démarré.
 
-Terminal 1 :
+### Terminal 1
 
 ```bash
 cd frontend
 npm start
 ```
 
-Terminal 2 :
+### Terminal 2
 
 ```bash
 cd frontend
@@ -589,67 +745,110 @@ Résultat attendu :
 0 failing
 ```
 
+Pour utiliser l’interface graphique :
+
+```bash
+npx cypress open
+```
+
 ---
 
-# 🛠️ Difficultés techniques rencontrées
+# 🛠️ 13. Difficultés techniques rencontrées
 
-| Problème | Cause | Solution |
+Le projet a nécessité plusieurs phases de diagnostic.
+
+| Problème | Cause identifiée | Solution |
 |---|---|---|
-| Testcontainers ne détectait pas Docker | compatibilité API Docker | configuration de docker-java |
-| MySQL instable | `mysql:latest` | version fixée à `mysql:8.0.36` |
-| JWT expiré | token invalide | génération d'un nouveau JWT |
-| Angular `NullInjectorError` | HttpClient absent | `provideHttpClientTesting()` |
-| Jest `No tests found` | mauvais chemin | vérification avec `find` |
-| Cypress inaccessible | Angular non démarré | `npm start` avant Cypress |
-| Rapport HTML mal chargé | ouverture directe en `file://` | serveur HTTP Python |
+| Testcontainers ne détectait pas Docker | compatibilité API Docker / docker-java | configuration de l’API utilisée |
+| MySQL de test instable | utilisation de `mysql:latest` | version fixée à `mysql:8.0.36` |
+| JWT expiré | token devenu invalide | génération d’un nouveau JWT |
+| Angular `NullInjectorError` | HttpClient absent du TestBed | ajout de `provideHttpClientTesting()` |
+| Jest `No tests found` | mauvais chemin de dossier | vérification des vrais chemins avec `find` |
+| Cypress inaccessible | Angular non démarré | lancement de `npm start` avant Cypress |
+| Rapport HTML mal affiché | ouverture directe du fichier | utilisation de `python3 -m http.server` |
 
 ---
 
-# 💡 Choix de reproductibilité
+# 📌 Choix important : éviter `latest`
 
-L'image :
+L’image utilisée initialement pour les tests d’intégration était :
 
 ```text
 mysql:latest
 ```
 
-a été remplacée par :
+Elle a été remplacée par :
 
 ```text
 mysql:8.0.36
 ```
 
-afin d'améliorer :
+Cela permet d’améliorer :
 
 ```text
-stabilité
-reproductibilité
-prédictibilité
+la stabilité
+la reproductibilité
+la prédictibilité
 ```
 
-Ce choix évite qu'une nouvelle version de MySQL modifie le comportement des tests sans modification du projet.
+Un environnement de test doit pouvoir être reproduit dans le temps.
+
+Utiliser une version explicitement fixée évite qu’une nouvelle version de MySQL modifie le comportement des tests sans changement dans le code du projet.
 
 ---
 
-# 📌 Accès rapide
+# 🧠 14. Ce que je retiens de la stratégie de tests
+
+L’objectif n’est pas uniquement d’obtenir un pourcentage de couverture élevé.
+
+Un test doit vérifier un comportement important.
+
+Exemples :
+
+```text
+Un utilisateur sans JWT
+→ ne doit pas accéder à /students
+
+Un JWT valide
+→ doit être ajouté automatiquement aux requêtes HTTP
+
+Une création d’étudiant
+→ doit envoyer les bonnes données avec POST
+
+Une modification
+→ doit envoyer les nouvelles données avec PUT
+
+Une suppression
+→ doit demander confirmation avant DELETE
+```
+
+La couverture est donc utilisée comme un **indicateur de qualité**, mais les tests sont construits autour de comportements fonctionnels réels.
+
+---
+
+# 📌 15. Accès rapide
 
 | Ressource | Lien |
 |---|---|
 | ☕ Tests back-end | [Ouvrir](./backend/src/test/java/com/openclassrooms/etudiant/) |
 | 🅰️ Tests front-end | [Ouvrir](./frontend/src/) |
+| 🔐 Auth Guard | [Ouvrir](./frontend/src/app/core/guard/auth.guard.spec.ts) |
+| 🔑 Auth Interceptor | [Ouvrir](./frontend/src/app/core/interceptor/auth.interceptor.spec.ts) |
 | 🌐 Tests Cypress | [Ouvrir](./frontend/cypress/e2e/) |
 | 📊 Rapport JaCoCo | [Ouvrir](./reports/backend-jacoco/) |
 | 📊 Rapport Jest | [Ouvrir](./reports/frontend-jest/) |
 | 📈 Rapport E2E | [Ouvrir](./frontend/cypress/reports/e2e-coverage.md) |
+| 📸 Capture back-end | [Ouvrir](./reports/screenshots/couverture_backend_81.png) |
+| 📸 Capture front-end | [Ouvrir](./reports/screenshots/couverture_frontend_83.png) |
 
 ---
 
 <div align="center">
 
-## ✅ Qualité validée
+# ✅ Qualité du projet validée
 
-**Back-end · Front-end · Intégration · E2E**
+### Back-end · Front-end · Intégration · E2E
 
-Projet 2 — Expert DevOps · OpenClassrooms
+**Projet 2 — Expert DevOps · OpenClassrooms**
 
 </div>
