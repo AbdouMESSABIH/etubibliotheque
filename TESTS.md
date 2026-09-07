@@ -251,7 +251,7 @@ Les classes principalement structurelles telles que les `DTO` et les `Entities` 
 
 ## 📸 Preuve visuelle — Back-end
 
-![Couverture back-end JaCoCo](./reports/screenshots/couverture_backend_81.png)
+![Couverture back-end JaCoCo](./reports/screenshots/Backend_couverture.png)
 
 ---
 
@@ -261,8 +261,8 @@ Les classes principalement structurelles telles que les `DTO` et les `Entities` 
 
 📄 [Voir le fichier index.html](./reports/backend-jacoco/index.html)
 
-> GitHub affiche le HTML comme un fichier source.  
-> La section **Consulter les rapports localement** explique comment afficher le vrai rendu interactif.
+> GitHub affiche le fichier HTML comme du code source.  
+> Pour consulter le rendu complet du rapport, voir la section **Consulter les rapports HTML localement** plus bas.
 
 ---
 
@@ -280,7 +280,7 @@ RxJS
 
 ---
 
-# StudentService
+## StudentService
 
 📄 [student.service.spec.ts](./frontend/src/app/core/service/student.service.spec.ts)
 
@@ -308,7 +308,7 @@ Aucun vrai back-end n’est nécessaire pour ces tests.
 
 ---
 
-# UserService
+## UserService
 
 📄 [user.service.spec.ts](./frontend/src/app/core/service/user.service.spec.ts)
 
@@ -439,7 +439,7 @@ Le seuil demandé de **80 % minimum** est atteint sur la couverture principale d
 
 ## 📸 Preuve visuelle — Front-end
 
-![Couverture front-end Jest](./reports/screenshots/couverture_frontend_83.png)
+![Couverture front-end Jest](./reports/screenshots/Frontend_couverture.png)
 
 ---
 
@@ -455,7 +455,7 @@ Le seuil demandé de **80 % minimum** est atteint sur la couverture principale d
 
 📁 [Accéder aux tests Cypress](./frontend/cypress/e2e/)
 
-Les tests Cypress reproduisent les actions d’un utilisateur réel dans le navigateur.
+Les tests Cypress reproduisent les actions d’un utilisateur dans le navigateur.
 
 Les appels API sont simulés avec :
 
@@ -473,7 +473,7 @@ d’un environnement externe
 
 ---
 
-# 🔐 Parcours de connexion
+## 🔐 Parcours de connexion
 
 📄 [login.cy.ts](./frontend/cypress/e2e/login.cy.ts)
 
@@ -484,7 +484,7 @@ Scénarios :
 ✅ Mauvais identifiants
 ```
 
-Le parcours de connexion vérifie notamment :
+Le parcours vérifie notamment :
 
 ```text
 Ouverture de /login
@@ -505,7 +505,7 @@ POST /api/login
 
 ---
 
-# 📝 Parcours d’inscription
+## 📝 Parcours d’inscription
 
 📄 [register.cy.ts](./frontend/cypress/e2e/register.cy.ts)
 
@@ -524,7 +524,7 @@ POST /api/register
 
 ---
 
-# 👨‍🎓 Parcours étudiants
+## 👨‍🎓 Parcours étudiants
 
 📄 [students.cy.ts](./frontend/cypress/e2e/students.cy.ts)
 
@@ -612,9 +612,32 @@ Il s’agit ici de la **couverture des parcours utilisateurs définis**, et non 
 
 ---
 
-# 🔎 11. Consulter les rapports HTML localement
+# 🖼️ 11. Preuves de couverture
 
-GitHub stocke les rapports HTML mais ne les affiche pas comme un véritable site web.
+## Back-end
+
+**JaCoCo : 81 %**
+
+![Rapport couverture back-end](./reports/screenshots/Backend_couverture.png)
+
+---
+
+## Front-end
+
+**Jest :**
+
+```text
+Statements : 83,33 %
+Lines      : 81,57 %
+```
+
+![Rapport couverture front-end](./reports/screenshots/Frontend_couverture.png)
+
+---
+
+# 🔎 12. Consulter les rapports HTML localement
+
+GitHub stocke les rapports HTML, mais ne les exécute pas comme un véritable site web.
 
 Pour profiter de leur rendu complet, les rapports peuvent être servis localement.
 
@@ -638,9 +661,9 @@ Le rapport affichera notamment :
 
 ```text
 Couverture globale : 81 %
-Services : 100 %
-Controllers : 100 %
-Sécurité : 96 %
+Services            : 100 %
+Controllers         : 100 %
+Sécurité            : 96 %
 ```
 
 ---
@@ -668,7 +691,7 @@ Lines      : 81,57 %
 
 ---
 
-# ▶️ 12. Commandes de validation
+# ▶️ 13. Commandes de validation
 
 ## Back-end
 
@@ -698,7 +721,7 @@ target/site/jacoco/index.html
 
 ---
 
-# Front-end Jest
+## Front-end Jest
 
 Se placer dans :
 
@@ -720,7 +743,7 @@ npm test -- --runInBand --coverage
 
 ---
 
-# Cypress
+## Cypress
 
 Le front-end Angular doit être démarré.
 
@@ -753,7 +776,7 @@ npx cypress open
 
 ---
 
-# 🛠️ 13. Difficultés techniques rencontrées
+# 🛠️ 14. Difficultés techniques rencontrées
 
 Le projet a nécessité plusieurs phases de diagnostic.
 
@@ -763,13 +786,13 @@ Le projet a nécessité plusieurs phases de diagnostic.
 | MySQL de test instable | utilisation de `mysql:latest` | version fixée à `mysql:8.0.36` |
 | JWT expiré | token devenu invalide | génération d’un nouveau JWT |
 | Angular `NullInjectorError` | HttpClient absent du TestBed | ajout de `provideHttpClientTesting()` |
-| Jest `No tests found` | mauvais chemin de dossier | vérification des vrais chemins avec `find` |
+| Jest `No tests found` | mauvais chemin de dossier | vérification avec `find` |
 | Cypress inaccessible | Angular non démarré | lancement de `npm start` avant Cypress |
 | Rapport HTML mal affiché | ouverture directe du fichier | utilisation de `python3 -m http.server` |
 
 ---
 
-# 📌 Choix important : éviter `latest`
+# 📌 15. Choix important : éviter `latest`
 
 L’image utilisée initialement pour les tests d’intégration était :
 
@@ -797,7 +820,7 @@ Utiliser une version explicitement fixée évite qu’une nouvelle version de My
 
 ---
 
-# 🧠 14. Ce que je retiens de la stratégie de tests
+# 🧠 16. Ce que je retiens de la stratégie de tests
 
 L’objectif n’est pas uniquement d’obtenir un pourcentage de couverture élevé.
 
@@ -826,7 +849,7 @@ La couverture est donc utilisée comme un **indicateur de qualité**, mais les t
 
 ---
 
-# 📌 15. Accès rapide
+# 📌 17. Accès rapide
 
 | Ressource | Lien |
 |---|---|
@@ -838,8 +861,8 @@ La couverture est donc utilisée comme un **indicateur de qualité**, mais les t
 | 📊 Rapport JaCoCo | [Ouvrir](./reports/backend-jacoco/) |
 | 📊 Rapport Jest | [Ouvrir](./reports/frontend-jest/) |
 | 📈 Rapport E2E | [Ouvrir](./frontend/cypress/reports/e2e-coverage.md) |
-| 📸 Capture back-end | [Ouvrir](./reports/screenshots/couverture_backend_81.png) |
-| 📸 Capture front-end | [Ouvrir](./reports/screenshots/couverture_frontend_83.png) |
+| 📸 Capture back-end | [Ouvrir](./reports/screenshots/Backend_couverture.png) |
+| 📸 Capture front-end | [Ouvrir](./reports/screenshots/Frontend_couverture.png) |
 
 ---
 
