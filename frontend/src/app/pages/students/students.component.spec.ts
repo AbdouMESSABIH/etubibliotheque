@@ -11,14 +11,13 @@ describe('StudentsComponent', () => {
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      imports: [StudentsComponent]
+      imports: [StudentsComponent],
       providers: [
         provideHttpClient(),
         provideHttpClientTesting(),
         provideRouter([])
       ]
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(StudentsComponent);
     component = fixture.componentInstance;
