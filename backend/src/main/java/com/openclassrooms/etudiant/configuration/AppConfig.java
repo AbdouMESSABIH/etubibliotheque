@@ -10,8 +10,12 @@ public class AppConfig {
 
     @Bean
     public static PropertySourcesPlaceholderConfigurer propertySourcesPlaceholderConfigurer() {
-        PropertySourcesPlaceholderConfigurer configurer = new PropertySourcesPlaceholderConfigurer();
+        PropertySourcesPlaceholderConfigurer configurer =
+                new PropertySourcesPlaceholderConfigurer();
+
         configurer.setLocation(new FileSystemResource(".env"));
+        configurer.setIgnoreResourceNotFound(true);
+
         return configurer;
     }
 }
