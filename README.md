@@ -14,9 +14,9 @@
 
 | Back-end | Front-end | Tests E2E |
 |:---:|:---:|:---:|
-| ✅ JaCoCo : **81 %** | ✅ Jest : **> 80 %** | ✅ Cypress : **8 / 8** |
-| 32 tests automatisés | Statements : **83,33 %** | **0 échec** |
-| Services + API + sécurité | Lines : **81,57 %** | Parcours définis : **100 % couverts** |
+| ✅ JaCoCo : **81 %** | ✅ Jest : **82,30 % Statements** | ✅ Cypress : **8 / 8** |
+| 32 tests automatisés | **36 tests / 11 suites** | **0 échec** |
+| Services + API + sécurité | Lines : **80,71 %** · Branches : **75 %** | Parcours définis : **100 % couverts** |
 
 </div>
 
@@ -534,16 +534,16 @@ erreur
 
 ## Couverture Jest
 
-Le rapport généré lors de la validation de l'étape affiche :
+Le rapport final régénéré après les corrections affiche :
 
 | Métrique | Couverture |
 |---|---:|
-| Statements | **83,33 %** |
-| Lines | **81,57 %** |
-| Branches | 50 % |
-| Functions | 56,09 % |
+| Statements | **82,30 %** |
+| Lines | **80,71 %** |
+| Branches | **75 %** |
+| Functions | **73,80 %** |
 
-Le seuil demandé de **80 %** est atteint sur la couverture principale du front-end.
+Les **36 tests Jest** répartis dans **11 suites** passent sans échec. Le seuil demandé de **80 %** reste atteint sur les métriques principales du front-end.
 
 ### 📄 Rapport
 
@@ -658,11 +658,18 @@ Le rapport est disponible ici :
 | Tests back-end | ✅ **32 tests** |
 | Erreurs back-end | ✅ **0** |
 | Couverture JaCoCo | ✅ **81 %** |
-| Statements Jest | ✅ **83,33 %** |
-| Lines Jest | ✅ **81,57 %** |
+| Tests Jest | ✅ **36 / 36** |
+| Suites Jest | ✅ **11 / 11** |
+| Statements Jest | ✅ **82,30 %** |
+| Lines Jest | ✅ **80,71 %** |
+| Branches Jest | ✅ **75 %** |
+| Functions Jest | ✅ **73,80 %** |
+| ESLint | ✅ **configuré** |
+| Vérification TypeScript | ✅ `tsc --noEmit` |
 | Cypress | ✅ **8 / 8** |
 | Échecs Cypress | ✅ **0** |
 | Parcours E2E définis couverts | ✅ **100 %** |
+| GitHub Actions | ✅ workflow CI configuré |
 
 ---
 
@@ -786,10 +793,24 @@ target/site/jacoco/index.html
 
 ---
 
-## Front-end Jest
+## Front-end
+
+Vérification ESLint :
 
 ```bash
 cd frontend
+npx ng lint
+```
+
+Vérification TypeScript :
+
+```bash
+npx tsc -p tsconfig.spec.json --noEmit
+```
+
+Tests Jest :
+
+```bash
 npm test -- --runInBand
 ```
 
@@ -833,6 +854,33 @@ npx cypress open
 ```
 
 ---
+
+# ⚙️ Intégration continue avec GitHub Actions
+
+Un workflow CI est défini dans :
+
+```text
+.github/workflows/ci.yml
+```
+
+Il s'exécute sur les `push` et les `pull_request`.
+
+Le job back-end utilise **Java 21** et exécute :
+
+```bash
+mvn test
+```
+
+Le job front-end utilise **Node.js 20** et exécute :
+
+```bash
+npm ci
+npx ng lint
+npx tsc -p tsconfig.spec.json --noEmit
+npm test -- --runInBand --coverage
+```
+
+L'objectif est de détecter automatiquement une régression de compilation, de qualité ou de tests avant intégration du code.
 
 # 🧰 Difficultés rencontrées et diagnostics
 
@@ -898,15 +946,21 @@ etubibliotheque/
 │   │   ├── reports/
 │   │   │   └── e2e-coverage.md
 │   │   └── support/
+│   ├── eslint.config.js
 │   ├── package.json
 │   └── cypress.config.ts
+│
+├── .github/
+│   └── workflows/
+│       └── ci.yml
 │
 ├── reports/
 │   ├── backend-jacoco/
 │   └── frontend-jest/
 │
 ├── .gitignore
-└── README.md
+├── README.md
+└── TESTS.md
 ```
 
 ---
@@ -953,6 +1007,9 @@ Ce projet m'a permis de travailler sur :
 - gestion des dépendances Maven / npm ;
 - Git ;
 - GitHub ;
+- GitHub Actions ;
+- ESLint ;
+- validation TypeScript ;
 - analyse de couverture ;
 - diagnostic d'erreurs.
 

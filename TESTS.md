@@ -10,9 +10,9 @@ Cette page centralise les **tests unitaires**, les **tests d’intégration**, l
 
 | Back-end | Front-end | E2E |
 |:---:|:---:|:---:|
-| ✅ **32 tests** | ✅ Jest | ✅ Cypress |
-| ✅ **81 % JaCoCo** | ✅ **83,33 % Statements** | ✅ **8 / 8 tests** |
-| ✅ 0 erreur | ✅ **81,57 % Lines** | ✅ 0 échec |
+| ✅ **32 tests** | ✅ **36 tests / 11 suites Jest** | ✅ Cypress |
+| ✅ **81 % JaCoCo** | ✅ **82,30 % Statements** | ✅ **8 / 8 tests** |
+| ✅ 0 erreur | ✅ **80,71 % Lines · 75 % Branches** | ✅ 0 échec |
 
 </div>
 
@@ -428,12 +428,12 @@ Le rapport de couverture du front-end est généré avec Jest / Istanbul.
 
 | Métrique | Couverture |
 |---|---:|
-| Statements | **83,33 %** |
-| Lines | **81,57 %** |
-| Branches | 50 % |
-| Functions | 56,09 % |
+| Statements | **82,30 %** |
+| Lines | **80,71 %** |
+| Branches | **75 %** |
+| Functions | **73,80 %** |
 
-Le seuil demandé de **80 % minimum** est atteint sur la couverture principale du front-end.
+Les **36 tests Jest** répartis dans **11 suites** passent sans échec. Le seuil demandé de **80 % minimum** reste atteint sur les métriques principales du front-end.
 
 ---
 
@@ -498,7 +498,7 @@ En cas de mauvais identifiants :
 
 ```text
 POST /api/login
-→ réponse 400 simulée
+→ réponse 401 simulée
 → message d’erreur visible
 → aucun JWT stocké
 ```
@@ -604,11 +604,18 @@ Il s’agit ici de la **couverture des parcours utilisateurs définis**, et non 
 | Failures back-end | ✅ **0** |
 | Errors back-end | ✅ **0** |
 | JaCoCo | ✅ **81 %** |
-| Jest Statements | ✅ **83,33 %** |
-| Jest Lines | ✅ **81,57 %** |
+| Tests Jest | ✅ **36 / 36** |
+| Suites Jest | ✅ **11 / 11** |
+| Jest Statements | ✅ **82,30 %** |
+| Jest Lines | ✅ **80,71 %** |
+| Jest Branches | ✅ **75 %** |
+| Jest Functions | ✅ **73,80 %** |
+| ESLint | ✅ **configuré** |
+| Vérification TypeScript | ✅ `tsc --noEmit` |
 | Cypress | ✅ **8 / 8** |
 | Échecs Cypress | ✅ **0** |
 | Parcours E2E définis couverts | ✅ **100 %** |
+| GitHub Actions | ✅ workflow CI configuré |
 
 ---
 
@@ -627,8 +634,8 @@ Il s’agit ici de la **couverture des parcours utilisateurs définis**, et non 
 **Jest :**
 
 ```text
-Statements : 83,33 %
-Lines      : 81,57 %
+Statements : 82,30 %
+Lines      : 80,71 %
 ```
 
 ![Rapport couverture front-end](./reports/screenshots/Frontend_couverture.png)
@@ -685,8 +692,10 @@ http://localhost:8001
 Le rapport affichera notamment :
 
 ```text
-Statements : 83,33 %
-Lines      : 81,57 %
+Statements : 82,30 %
+Lines      : 80,71 %
+Branches   : 75 %
+Functions  : 73,80 %
 ```
 
 ---
@@ -721,7 +730,7 @@ target/site/jacoco/index.html
 
 ---
 
-## Front-end Jest
+## Front-end
 
 Se placer dans :
 
@@ -729,7 +738,19 @@ Se placer dans :
 cd frontend
 ```
 
-Lancer les tests :
+Vérifier ESLint :
+
+```bash
+npx ng lint
+```
+
+Vérifier TypeScript :
+
+```bash
+npx tsc -p tsconfig.spec.json --noEmit
+```
+
+Lancer les tests Jest :
 
 ```bash
 npm test -- --runInBand
@@ -776,7 +797,36 @@ npx cypress open
 
 ---
 
-# 🛠️ 14. Difficultés techniques rencontrées
+# ⚙️ 14. Intégration continue
+
+Le workflow GitHub Actions est défini dans :
+
+```text
+.github/workflows/ci.yml
+```
+
+Il s'exécute sur les `push` et les `pull_request`.
+
+## Job back-end
+
+```text
+Java 21
+→ mvn test
+```
+
+## Job front-end
+
+```text
+Node.js 20
+→ npm ci
+→ npx ng lint
+→ npx tsc -p tsconfig.spec.json --noEmit
+→ npm test -- --runInBand --coverage
+```
+
+Ce workflow automatise les contrôles essentiels avant intégration du code.
+
+# 🛠️ 15. Difficultés techniques rencontrées
 
 Le projet a nécessité plusieurs phases de diagnostic.
 
@@ -792,7 +842,7 @@ Le projet a nécessité plusieurs phases de diagnostic.
 
 ---
 
-# 📌 15. Choix important : éviter `latest`
+# 📌 16. Choix important : éviter `latest`
 
 L’image utilisée initialement pour les tests d’intégration était :
 
@@ -820,7 +870,7 @@ Utiliser une version explicitement fixée évite qu’une nouvelle version de My
 
 ---
 
-# 🧠 16. Ce que je retiens de la stratégie de tests
+# 🧠 17. Ce que je retiens de la stratégie de tests
 
 L’objectif n’est pas uniquement d’obtenir un pourcentage de couverture élevé.
 
@@ -849,7 +899,7 @@ La couverture est donc utilisée comme un **indicateur de qualité**, mais les t
 
 ---
 
-# 📌 17. Accès rapide
+# 📌 18. Accès rapide
 
 | Ressource | Lien |
 |---|---|
@@ -862,7 +912,7 @@ La couverture est donc utilisée comme un **indicateur de qualité**, mais les t
 | 📊 Rapport Jest | [Ouvrir](./reports/frontend-jest/) |
 | 📈 Rapport E2E | [Ouvrir](./frontend/cypress/reports/e2e-coverage.md) |
 | 📸 Capture back-end | [Ouvrir](./reports/screenshots/Backend_couverture.png) |
-| 📸 Capture front-end | [Ouvrir](./reports/screenshots/Frontend_couverture.png) |
+| ⚙️ Workflow CI | [Ouvrir](./.github/workflows/ci.yml) |
 
 ---
 

@@ -21,6 +21,7 @@ export class StudentEditComponent implements OnInit {
   private router = inject(Router);
 
   studentId!: number;
+  errorMessage = '';
 
   studentForm = this.formBuilder.group({
     firstName: ['', Validators.required],
@@ -28,6 +29,8 @@ export class StudentEditComponent implements OnInit {
   });
 
   ngOnInit(): void {
+
+    this.errorMessage = '';
 
     this.studentId = Number(
       this.route.snapshot.paramMap.get('id')
@@ -42,11 +45,15 @@ export class StudentEditComponent implements OnInit {
       },
       error: (error) => {
         console.error('Erreur lors du chargement de l’étudiant', error);
+        this.errorMessage =
+          'Impossible de charger les informations de l’étudiant.';
       }
     });
   }
 
   onSubmit(): void {
+
+    this.errorMessage = '';
 
     if (this.studentForm.invalid) {
       return;
@@ -63,6 +70,8 @@ export class StudentEditComponent implements OnInit {
       },
       error: (error) => {
         console.error('Erreur lors de la modification de l’étudiant', error);
+        this.errorMessage =
+          'Impossible de modifier l’étudiant. Veuillez réessayer.';
       }
     });
   }

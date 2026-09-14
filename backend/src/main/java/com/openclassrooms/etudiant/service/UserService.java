@@ -5,6 +5,7 @@ import com.openclassrooms.etudiant.repository.UserRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.util.Optional;
 @Transactional
 @RequiredArgsConstructor
 public class UserService {
+
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtService jwtService;
@@ -26,9 +28,13 @@ public class UserService {
         log.info("Registering new user");
 
         Optional<User> optionalUser = userRepository.findByLogin(user.getLogin());
+
         if (optionalUser.isPresent()) {
-            throw new IllegalArgumentException("User with login " + user.getLogin() + " already exists");
+            throw new IllegalArgumentException(
+                    "User with login " + user.getLogin() + " already exists"
+            );
         }
+
         user.setPassword(passwordEncoder.encode(user.getPassword()));
         userRepository.save(user);
     }
@@ -36,16 +42,21 @@ public class UserService {
     public String login(String login, String password) {
         Assert.notNull(login, "Login must not be null");
         Assert.notNull(password, "Password must not be null");
-        Optional<User> user = userRepository.findByLogin(login);
-        if (user.isPresent() && passwordEncoder.matches(password, user.get().getPassword())) {
-            UserDetails userDetails = org.springframework.security.core.userdetails.User.builder()
-                    .username(login)
-                    .password(user.get().getPassword())
-                    .build();
-            return jwtService.generateToken(userDetails);
-        } else {
-            throw new IllegalArgumentException("Invalid credentials");
-        }
-    }
 
+        Optional<User> user = userRepository.findByLogin(login);
+
+        if (user.isPresent()
+                && passwordEncoder.matches(password, user.get().getPassword())) {
+
+            UserDetails userDetails =
+                    org.springframework.security.core.userdetails.User.builder()
+                            .username(login)
+                            .password(user.get().getPassword())
+                            .build();
+
+            return jwtService.generateToken(userDetails);
+        }
+
+        throw new BadCredentialsException("Invalid credentials");
+    }
 }

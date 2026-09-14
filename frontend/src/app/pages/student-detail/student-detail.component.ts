@@ -19,8 +19,11 @@ export class StudentDetailComponent implements OnInit {
   private router = inject(Router);
 
   student?: Student;
+  errorMessage = '';
 
   ngOnInit(): void {
+
+    this.errorMessage = '';
 
     const id = Number(this.route.snapshot.paramMap.get('id'));
 
@@ -30,17 +33,22 @@ export class StudentDetailComponent implements OnInit {
       },
       error: (error) => {
         console.error('Erreur lors du chargement de l’étudiant', error);
+        this.errorMessage =
+          'Impossible de charger les informations de l’étudiant.';
       }
     });
   }
+
   deleteStudent(): void {
+
+    this.errorMessage = '';
 
     if (!this.student?.id) {
       return;
     }
 
     const confirmation = confirm(
-     'Voulez-vous vraiment supprimer cet étudiant ?'
+      'Voulez-vous vraiment supprimer cet étudiant ?'
     );
 
     if (!confirmation) {
@@ -53,6 +61,8 @@ export class StudentDetailComponent implements OnInit {
       },
       error: (error) => {
         console.error('Erreur lors de la suppression de l’étudiant', error);
+        this.errorMessage =
+          'Impossible de supprimer l’étudiant. Veuillez réessayer.';
       }
     });
   }

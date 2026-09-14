@@ -20,6 +20,12 @@
     />
   </div>
 
+  @if (errorMessage) {
+    <p class="error-message">
+      {{ errorMessage }}
+    </p>
+  }
+
   <button type="submit">
     Ajouter
   </button>

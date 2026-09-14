@@ -1,5 +1,11 @@
 import { TestBed } from '@angular/core/testing';
-import { provideRouter, Router, UrlTree } from '@angular/router';
+import {
+  ActivatedRouteSnapshot,
+  provideRouter,
+  Router,
+  RouterStateSnapshot,
+  UrlTree
+} from '@angular/router';
 
 import { authGuard } from './auth.guard';
 
@@ -27,9 +33,12 @@ describe('authGuard', () => {
     // GIVEN
     localStorage.setItem('token', 'JWT_TOKEN');
 
+    const route = {} as ActivatedRouteSnapshot;
+    const state = {} as RouterStateSnapshot;
+
     // WHEN
     const result = TestBed.runInInjectionContext(() =>
-      authGuard({} as any, {} as any)
+      authGuard(route, state)
     );
 
     // THEN
@@ -37,9 +46,13 @@ describe('authGuard', () => {
   });
 
   it('should redirect to login when token does not exist', () => {
+    // GIVEN
+    const route = {} as ActivatedRouteSnapshot;
+    const state = {} as RouterStateSnapshot;
+
     // WHEN
     const result = TestBed.runInInjectionContext(() =>
-      authGuard({} as any, {} as any)
+      authGuard(route, state)
     );
 
     // THEN

@@ -10,6 +10,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
+import org.springframework.security.authentication.BadCredentialsException;
 
 import java.util.Optional;
 
@@ -107,7 +108,7 @@ public class UserServiceTest {
         when(passwordEncoder.matches(PASSWORD, PASSWORD)).thenReturn(false);
 
         // THEN
-        Assertions.assertThrows(IllegalArgumentException.class,
+        Assertions.assertThrows(BadCredentialsException.class,
             () -> userService.login(LOGIN, PASSWORD));
     }
 
@@ -119,7 +120,7 @@ public class UserServiceTest {
 
         // THEN
         Assertions.assertThrows(
-            IllegalArgumentException.class,
+            BadCredentialsException.class,
             () -> userService.login(LOGIN, PASSWORD)
     );
     }

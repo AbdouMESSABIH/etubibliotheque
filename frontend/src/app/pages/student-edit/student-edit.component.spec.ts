@@ -30,7 +30,6 @@ describe('StudentEditComponent', () => {
       navigate: jest.fn()
     };
 
-    // Réponse par défaut au chargement du composant
     studentServiceMock.getById.mockReturnValue(
       of({
         id: 1,
@@ -61,8 +60,7 @@ describe('StudentEditComponent', () => {
           useValue: routerMock
         }
       ]
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(StudentEditComponent);
     component = fixture.componentInstance;
@@ -84,6 +82,35 @@ describe('StudentEditComponent', () => {
       firstName: 'Jean',
       lastName: 'Dupont'
     });
+  });
+
+  it('should display an error when student loading fails', () => {
+    // GIVEN
+    const error = new Error('Erreur chargement');
+
+    const consoleSpy = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+
+    studentServiceMock.getById.mockReturnValue(
+      throwError(() => error)
+    );
+
+    // WHEN
+    fixture = TestBed.createComponent(StudentEditComponent);
+    component = fixture.componentInstance;
+    fixture.detectChanges();
+
+    // THEN
+    expect(consoleSpy).toHaveBeenCalledWith(
+      'Erreur lors du chargement de l’étudiant',
+      error
+    );
+
+    expect(component.errorMessage)
+      .toBe('Impossible de charger les informations de l’étudiant.');
+
+    consoleSpy.mockRestore();
   });
 
   it('should not update student when form is invalid', () => {
@@ -132,13 +159,13 @@ describe('StudentEditComponent', () => {
     );
   });
 
-  it('should handle an error when update fails', () => {
+  it('should display an error when update fails', () => {
     // GIVEN
     const error = new Error('Erreur test');
 
     const consoleSpy = jest
       .spyOn(console, 'error')
-      .mockImplementation(() => {});
+      .mockImplementation(() => undefined);
 
     component.studentForm.setValue({
       firstName: 'Jean',
@@ -157,6 +184,9 @@ describe('StudentEditComponent', () => {
       'Erreur lors de la modification de l’étudiant',
       error
     );
+
+    expect(component.errorMessage)
+      .toBe('Impossible de modifier l’étudiant. Veuillez réessayer.');
 
     expect(routerMock.navigate).not.toHaveBeenCalled();
 

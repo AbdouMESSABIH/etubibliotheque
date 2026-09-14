@@ -40,8 +40,7 @@ describe('StudentCreateComponent', () => {
           useValue: routerMock
         }
       ]
-    })
-    .compileComponents();
+    }).compileComponents();
 
     fixture = TestBed.createComponent(StudentCreateComponent);
     component = fixture.componentInstance;
@@ -87,13 +86,13 @@ describe('StudentCreateComponent', () => {
     expect(routerMock.navigate).toHaveBeenCalledWith(['/students']);
   });
 
-  it('should handle an error when student creation fails', () => {
+  it('should display an error when student creation fails', () => {
     // GIVEN
     const error = new Error('Erreur test');
 
     const consoleSpy = jest
       .spyOn(console, 'error')
-      .mockImplementation(() => {});
+      .mockImplementation(() => undefined);
 
     component.studentForm.setValue({
       firstName: 'Jean',
@@ -112,6 +111,9 @@ describe('StudentCreateComponent', () => {
       'Erreur lors de la création de l’étudiant',
       error
     );
+
+    expect(component.errorMessage)
+      .toBe('Impossible de créer l’étudiant. Veuillez réessayer.');
 
     expect(routerMock.navigate).not.toHaveBeenCalled();
 

@@ -2,14 +2,21 @@
 
 <a routerLink="/students/new">Ajouter un étudiant</a>
 
-@if (students.length === 0) {
-  <p>Aucun étudiant.</p>
-}
+@if (errorMessage) {
+  <p class="error-message">
+    {{ errorMessage }}
+  </p>
+} @else {
 
-@for (student of students; track student.id) {
-  <div>
-    <strong>{{ student.firstName }} {{ student.lastName }}</strong>
-    <span> - ID : {{ student.id }}</span>
-    <a [routerLink]="['/students', student.id]">Voir</a>
-  </div>
+  @if (students.length === 0) {
+    <p>Aucun étudiant.</p>
+  }
+
+  @for (student of students; track student.id) {
+    <div>
+      <strong>{{ student.firstName }} {{ student.lastName }}</strong>
+      <span> - ID : {{ student.id }}</span>
+      <a [routerLink]="['/students', student.id]">Voir</a>
+    </div>
+  }
 }

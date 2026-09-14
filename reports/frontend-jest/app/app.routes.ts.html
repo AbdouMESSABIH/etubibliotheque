@@ -3,15 +3,15 @@
 <html lang="en">
 
 <head>
-    <title>Code coverage report for pages/student-create/student-create.component.html</title>
+    <title>Code coverage report for app/app.routes.ts</title>
     <meta charset="utf-8" />
-    <link rel="stylesheet" href="../../prettify.css" />
-    <link rel="stylesheet" href="../../base.css" />
-    <link rel="shortcut icon" type="image/x-icon" href="../../favicon.png" />
+    <link rel="stylesheet" href="../prettify.css" />
+    <link rel="stylesheet" href="../base.css" />
+    <link rel="shortcut icon" type="image/x-icon" href="../favicon.png" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <style type='text/css'>
         .coverage-summary .sorter {
-            background-image: url(../../sort-arrow-sprite.png);
+            background-image: url(../sort-arrow-sprite.png);
         }
     </style>
 </head>
@@ -19,13 +19,13 @@
 <body>
 <div class='wrapper'>
     <div class='pad1'>
-        <h1><a href="../../index.html">All files</a> / <a href="index.html">pages/student-create</a> student-create.component.html</h1>
+        <h1><a href="../index.html">All files</a> / <a href="index.html">app</a> app.routes.ts</h1>
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>0/9</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">100% </span>
+                <span class="strong">0% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>0/9</span>
             </div>
         
             
@@ -61,7 +61,7 @@
             </div>
         </template>
     </div>
-    <div class='status-line high'></div>
+    <div class='status-line low'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -89,7 +89,18 @@
 <a name='L24'></a><a href='#L24'>24</a>
 <a name='L25'></a><a href='#L25'>25</a>
 <a name='L26'></a><a href='#L26'>26</a>
-<a name='L27'></a><a href='#L27'>27</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L27'></a><a href='#L27'>27</a>
+<a name='L28'></a><a href='#L28'>28</a></td><td class="line-coverage quiet"><span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-neutral">&nbsp;</span>
+<span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -106,58 +117,50 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">&lt;h1&gt;Ajouter un étudiant&lt;/h1&gt;
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Routes } from '@angular/router';
+<span class="cstat-no" title="statement not covered" >import {RegisterComponent} from './pages/register/register.component';</span>
+<span class="cstat-no" title="statement not covered" >import {LoginComponent} from './pages/login/login.component';</span>
+<span class="cstat-no" title="statement not covered" >import {AppComponent} from './app.component';</span>
+<span class="cstat-no" title="statement not covered" >import { StudentsComponent } from './pages/students/students.component';</span>
+<span class="cstat-no" title="statement not covered" >import { authGuard } from './core/guard/auth.guard';</span>
+<span class="cstat-no" title="statement not covered" >import { StudentCreateComponent } from './pages/student-create/student-create.component';</span>
+<span class="cstat-no" title="statement not covered" >import { StudentDetailComponent } from './pages/student-detail/student-detail.component';</span>
+<span class="cstat-no" title="statement not covered" >import { StudentEditComponent } from './pages/student-edit/student-edit.component';</span>
 &nbsp;
-&lt;form [formGroup]="studentForm" (ngSubmit)="onSubmit()"&gt;
-&nbsp;
-  &lt;div&gt;
-    &lt;label for="firstName"&gt;Prénom&lt;/label&gt;
-    &lt;input
-      id="firstName"
-      type="text"
-      formControlName="firstName"
-    /&gt;
-  &lt;/div&gt;
-&nbsp;
-  &lt;div&gt;
-    &lt;label for="lastName"&gt;Nom&lt;/label&gt;
-    &lt;input
-      id="lastName"
-      type="text"
-      formControlName="lastName"
-    /&gt;
-  &lt;/div&gt;
-&nbsp;
-  &lt;button type="submit"&gt;
-    Ajouter
-  &lt;/button&gt;
-&nbsp;
-&lt;/form&gt;</pre></td></tr></table></pre>
+export const <span class="cstat-no" title="statement not covered" >routes: Routes = [</span>
+  {
+    path: '',
+    component: AppComponent,
+  },
+  {
+    path: 'register',
+    component: RegisterComponent
+  },
+  {
+    path: 'login',
+    component: LoginComponent
+  },
+  { path: 'students', component: StudentsComponent, canActivate: [authGuard] },
+  { path: 'students/new', component: StudentCreateComponent, canActivate: [authGuard] },
+  { path: 'students/:id', component: StudentDetailComponent, canActivate: [authGuard] },
+  { path: 'students/:id/edit', component: StudentEditComponent, canActivate: [authGuard] },
+];</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2026-09-07T13:10:42.578Z
+                at 2026-09-14T19:59:48.606Z
             </div>
-        <script src="../../prettify.js"></script>
+        <script src="../prettify.js"></script>
         <script>
             window.onload = function () {
                 prettyPrint();
             };
         </script>
-        <script src="../../sorter.js"></script>
-        <script src="../../block-navigation.js"></script>
+        <script src="../sorter.js"></script>
+        <script src="../block-navigation.js"></script>
     </body>
 </html>
     

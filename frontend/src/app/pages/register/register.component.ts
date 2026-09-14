@@ -1,10 +1,11 @@
 import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
 import { MaterialModule } from '../../shared/material.module';
 import { UserService } from '../../core/service/user.service';
 import { Register } from '../../core/models/Register';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-register',
@@ -14,21 +15,22 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './register.component.css'
 })
 export class RegisterComponent implements OnInit {
+
   private userService = inject(UserService);
   private formBuilder = inject(FormBuilder);
   private destroyRef = inject(DestroyRef);
-  registerForm: FormGroup = new FormGroup({});
-  submitted: boolean = false;
 
-  ngOnInit() {
-    this.registerForm = this.formBuilder.group(
-      {
-        firstName: ['', Validators.required],
-        lastName: ['', Validators.required],
-        login: ['', Validators.required],
-        password: ['', Validators.required]
-      },
-    );
+  registerForm: FormGroup = new FormGroup({});
+
+  submitted = false;
+
+  ngOnInit(): void {
+    this.registerForm = this.formBuilder.group({
+      firstName: ['', Validators.required],
+      lastName: ['', Validators.required],
+      login: ['', Validators.required],
+      password: ['', Validators.required]
+    });
   }
 
   get form() {
@@ -37,23 +39,29 @@ export class RegisterComponent implements OnInit {
 
   onSubmit(): void {
     this.submitted = true;
+
     if (this.registerForm.invalid) {
       return;
     }
+
     const registerUser: Register = {
       firstName: this.registerForm.get('firstName')?.value,
       lastName: this.registerForm.get('lastName')?.value,
       login: this.registerForm.get('login')?.value,
       password: this.registerForm.get('password')?.value
     };
-    this.userService.register(registerUser)
+
+    this.userService
+      .register(registerUser)
       .pipe(takeUntilDestroyed(this.destroyRef))
-      .subscribe(
-      () => {
-        alert('SUCCESS!! :-)');
-        // TODO : router l'utilisateur vers la page de login
-      },
-    );
+      .subscribe({
+        next: () => {
+          alert('SUCCESS!! :-)');
+        },
+        error: (error) => {
+          console.error('Erreur lors de l’inscription', error);
+        }
+      });
   }
 
   onReset(): void {

@@ -1,3 +1,9 @@
+@if (errorMessage) {
+  <p class="error-message">
+    {{ errorMessage }}
+  </p>
+}
+
 @if (student) {
   <p><strong>ID :</strong> {{ student.id }}</p>
   <p><strong>Prénom :</strong> {{ student.firstName }}</p>

@@ -57,7 +57,7 @@ describe('Register E2E', () => {
     cy.contains('Login is required')
       .should('be.visible');
 
-    cy.contains('password is required')
+    cy.contains('Password is required')
       .should('be.visible');
   });
 

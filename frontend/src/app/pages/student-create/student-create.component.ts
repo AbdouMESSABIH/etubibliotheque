@@ -19,12 +19,16 @@ export class StudentCreateComponent {
   private studentService = inject(StudentService);
   private router = inject(Router);
 
+  errorMessage = '';
+
   studentForm = this.formBuilder.group({
     firstName: ['', Validators.required],
     lastName: ['', Validators.required]
   });
 
   onSubmit(): void {
+
+    this.errorMessage = '';
 
     if (this.studentForm.invalid) {
       return;
@@ -41,6 +45,8 @@ export class StudentCreateComponent {
       },
       error: (error) => {
         console.error('Erreur lors de la création de l’étudiant', error);
+        this.errorMessage =
+          'Impossible de créer l’étudiant. Veuillez réessayer.';
       }
     });
   }

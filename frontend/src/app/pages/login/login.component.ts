@@ -2,10 +2,11 @@ import { Component, DestroyRef, inject, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
+
 import { MaterialModule } from '../../shared/material.module';
 import { UserService } from '../../core/service/user.service';
 import { Login } from '../../core/models/Login';
-import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 
 @Component({
   selector: 'app-login',
@@ -15,17 +16,19 @@ import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
   styleUrl: './login.component.css'
 })
 export class LoginComponent implements OnInit {
+
   private userService = inject(UserService);
   private formBuilder = inject(FormBuilder);
   private destroyRef = inject(DestroyRef);
   private router = inject(Router);
 
   loginForm: FormGroup = new FormGroup({});
-  submitted: boolean = false;
-  errorMessage: string = '';
-  loading: boolean = false;
 
-  ngOnInit() {
+  submitted = false;
+  errorMessage = '';
+  loading = false;
+
+  ngOnInit(): void {
     this.loginForm = this.formBuilder.group({
       login: ['', Validators.required],
       password: ['', Validators.required]

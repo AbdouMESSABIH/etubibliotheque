@@ -8,7 +8,7 @@ describe('Login E2E', () => {
     });
   });
 
-  it('should login successfully and store the JWT token', () => {
+  it('should login successfully, store the JWT token and redirect to students', () => {
     // GIVEN
     cy.intercept('POST', '/api/login', {
       statusCode: 200,
@@ -18,6 +18,11 @@ describe('Login E2E', () => {
       }
     }).as('loginRequest');
 
+    cy.intercept('GET', '/api/students', {
+      statusCode: 200,
+      body: []
+    }).as('studentsRequest');
+
     // WHEN
     cy.get('input[formcontrolname="login"]')
       .type('jean');
@@ -25,11 +30,7 @@ describe('Login E2E', () => {
     cy.get('input[formcontrolname="password"]')
       .type('password');
 
-    cy.on('window:alert', (message) => {
-      expect(message).to.equal('SUCCESS!! :-)');
-    });
-
-    cy.contains('button', 'login')
+    cy.contains('button', /login/i)
       .click();
 
     // THEN
@@ -45,12 +46,17 @@ describe('Login E2E', () => {
         window.localStorage.getItem('token')
       ).to.equal('JWT_TOKEN');
     });
+
+    cy.url()
+      .should('include', '/students');
+
+    cy.wait('@studentsRequest');
   });
 
   it('should display an error when credentials are incorrect', () => {
     // GIVEN
     cy.intercept('POST', '/api/login', {
-      statusCode: 400,
+      statusCode: 401,
       body: {}
     }).as('loginRequest');
 
@@ -61,7 +67,7 @@ describe('Login E2E', () => {
     cy.get('input[formcontrolname="password"]')
       .type('wrong-password');
 
-    cy.contains('button', 'login')
+    cy.contains('button', /login/i)
       .click();
 
     // THEN
@@ -75,6 +81,9 @@ describe('Login E2E', () => {
         window.localStorage.getItem('token')
       ).to.be.null;
     });
+
+    cy.url()
+      .should('include', '/login');
   });
 
 });
