@@ -166,6 +166,7 @@
        		    	<excludes>
 						<exclude>com/openclassrooms/etudiant/dto/**</exclude>
 						<exclude>com/openclassrooms/etudiant/entities/**</exclude>
+						<exclude>com/openclassrooms/etudiant/mapper/*MapperImpl.class</exclude>
         			</excludes>
 				</configuration>
 
